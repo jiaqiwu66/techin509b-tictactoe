@@ -5,6 +5,8 @@
 from logic import make_empty_board
 from logic import other_player
 from logic import get_winner
+from logic import location_is_valid
+
 
 # Reminder to check all the tests
 
@@ -44,17 +46,7 @@ if __name__ == '__main__':
         is_valid = False
         while not is_valid:
             location = input(f'{current_player}:please input the location (the number): ')
-
-            if location.isdecimal() and 1 <= int(location) <= 9:
-                location = int(location)
-                if board[(location - 1) // 3][(location - 1) % 3] is not None:
-                    print(f'Location {location} has already been processed, please use a valid one.')
-                else:
-                    is_valid = True
-                    # update the board
-                    board[(location - 1) // 3][(location - 1) % 3] = current_player
-            else:
-                print('The input is not valid, Please try again.')
+            is_valid = location_is_valid(current_player, board, location)
                 
         # Next player
         current_player = other_player(current_player)

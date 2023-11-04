@@ -62,3 +62,18 @@ def other_player(player):
         return 'O'
     else:
         return "X"  # FIXME
+
+
+def location_is_valid(current_player, board, location):
+    """Justify if the location user input is valid"""
+    if location.isdecimal() and 1 <= int(location) <= 9:
+        location = int(location)
+        if board[(location - 1) // 3][(location - 1) % 3] is not None:
+            print(f'Location {location} has already been processed, please use a valid one.')
+            return False
+        else:
+            board[(location - 1) // 3][(location - 1) % 3] = current_player
+            return True
+    else:
+        print('The input is not valid, Please try again.')
+        return False
