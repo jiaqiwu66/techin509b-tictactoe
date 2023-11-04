@@ -14,6 +14,7 @@ board_num = [
     [7, 8, 9],
 ]
 
+
 def print_board(input_board):
     """
     print board
@@ -22,7 +23,8 @@ def print_board(input_board):
     """
     for row in input_board:
         print(row)
-    
+
+
 if __name__ == '__main__':
     board = make_empty_board()
     winner = None
@@ -44,9 +46,9 @@ if __name__ == '__main__':
             location = input(f'{current_player}:please input the location (the number): ')
 
             if location.isdecimal() and 1 <= int(location) <= 9:
-                location  = int(location)
-                if board[(location - 1) // 3][(location - 1) % 3 ] is not None:
-                    print(f'Location {location} has already been processed, please use availd one.')
+                location = int(location)
+                if board[(location - 1) // 3][(location - 1) % 3] is not None:
+                    print(f'Location {location} has already been processed, please use a valid one.')
                 else:
                     is_valid = True
                     # update the board
@@ -54,8 +56,8 @@ if __name__ == '__main__':
             else:
                 print('The input is not valid, Please try again.')
                 
-        # Next plsyer
-        current_player  = other_player(current_player)
+        # Next player
+        current_player = other_player(current_player)
         winner = get_winner(board)
         count += 1
 
@@ -65,4 +67,3 @@ if __name__ == '__main__':
         print(f'Winner is {winner}!')
         print('Here is the result board:')
     print_board(board)
-

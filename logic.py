@@ -14,28 +14,28 @@ def make_empty_board():
 def get_winner(board):
     """Determines the winner of the given board.
     Returns 'X', 'O', or None."""
-    n = len (board)
+    n = len(board)
 
     # horizontal
     for row in range(0, n):
         flag = True
         for column in range(0, n - 1):
-            if board[row][column] is None or board[row][column] !=board[row][column + 1]:
+            if board[row][column] is None or board[row][column] != board[row][column + 1]:
                 flag = False
                 break
         if flag:
             return {board[row][0]}
-    
+
     # vertical
-    for column in range(0,n):
+    for column in range(0, n):
         flag = True
         for row in range(0, n - 1):
             if board[row][column] is None or board[row][column] != board[row + 1][column]:
                 flag = False
                 break
         if flag:
-            return  board[0][column]
-    
+            return board[0][column]
+
     # diagonal
     flag = True
     for i in range(0, n - 1):
@@ -44,16 +44,16 @@ def get_winner(board):
             break
     if flag:
         return board[0][0]
-    
+
     flag = True
     for i in range(0, n - 1):
-        if board[n - 1 - i][i] is None or board[n - 1 -i][i] != board[n - 2 -i][i + 1]:
-            flag= False
+        if board[n - 1 - i][i] is None or board[n - 1 - i][i] != board[n - 2 - i][i + 1]:
+            flag = False
             break
     if flag:
         return board[0][n - 1]
-    
-    return None    # FIXME
+
+    return None  # FIXME
 
 
 def other_player(player):
