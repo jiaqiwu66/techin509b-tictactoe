@@ -10,11 +10,20 @@ from logic import location_is_valid
 
 # Reminder to check all the tests
 
-board_num = [
+NUMBER = [
     [1, 2, 3],
     [4, 5, 6],
     [7, 8, 9],
 ]
+
+WELCOME = """
+  _______ _ _      _______           _______
+ |__   __(_) |    |__   __|         |__   __|
+    | |   _| | __    | | __ _  ___     | | ___   ___
+    | |  | | |/ /    | |/ _` |/ __|    | |/ _ \ / _ \\
+    | |  | |   <     | | (_| | (__     | | (_) |  __/
+    |_|  |_|_|\\_\\    |_|\\__,_|\\___|    |_|\\___/ \\___|
+"""
 
 
 def print_board(input_board):
@@ -24,7 +33,15 @@ def print_board(input_board):
     :return: None
     """
     for row in input_board:
-        print(row)
+        print("-------------")
+        print("|", end='')
+        for element in row:
+            if element is None:
+                print(f'   |', end='')
+            else:
+                print(f' {element} |', end='')
+        print()
+    print("-------------")
 
 
 if __name__ == '__main__':
@@ -32,8 +49,9 @@ if __name__ == '__main__':
     winner = None
     current_player = 'X'
     count = 0
+    print(WELCOME)
     print("The board location is represented by the number from 1 - 9:")
-    print_board(board_num)
+    print_board(NUMBER)
     while winner is None and count < 9:
         # print("TODO: take a turn!")
         # TODO: Show the board to the user.
