@@ -24,7 +24,7 @@ def get_winner(board):
                 flag = False
                 break
         if flag:
-            return {board[row][0]}
+            return board[row][0]
 
     # vertical
     for column in range(0, n):
@@ -53,7 +53,7 @@ def get_winner(board):
     if flag:
         return board[0][n - 1]
 
-    return None  # FIXME
+    return None
 
 
 def other_player(player):
@@ -61,7 +61,7 @@ def other_player(player):
     if player == 'X':
         return 'O'
     else:
-        return "X"  # FIXME
+        return "X"
 
 
 def location_is_valid(current_player, board, location):

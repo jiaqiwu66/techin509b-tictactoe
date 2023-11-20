@@ -11,36 +11,18 @@ from logic import location_is_valid
 
 
 # Reminder to check all the tests
-
-
-def print_board(input_board):
-    """
-    print board
-    :param input_board: the input board need to be print
-    :return: None
-    """
-    for row in input_board:
-        print("-------------")
-        print("|", end='')
-        for element in row:
-            if element is None:
-                print(f'   |', end='')
-            else:
-                print(f' {element} |', end='')
-        print()
-    print("-------------")
-
-
 class TicTacToc:
     board = None
     winner = None
-    round_count = 0
+    count = 0
     # define mode for single player
-    is_single_player = True
+    is_single_player = None
     # X always be the first
     # O always be the second
-    is_single_player_first = True
-    single_player_mark = 'X'
+    is_single_player_first = None
+    player_1 = None
+    player_2 = None
+    bot = None
 
     NUMBER = [
         [1, 2, 3],
@@ -59,41 +41,55 @@ class TicTacToc:
 
     def __init__(self):
         self.board = make_empty_board()
-        self.round_count = 0
+        self.count = 0
         self.winner = None
+
+    def print_board(self, input_board):
+        """
+        print board
+        :param input_board: the input board need to be print
+        :return: None
+        """
+        for row in input_board:
+            print("-------------")
+            print("|", end='')
+            for element in row:
+                if element is None:
+                    print(f'   |', end='')
+                else:
+                    print(f' {element} |', end='')
+            print()
+        print("-------------")
 
     def start_game(self):
         print(self.WELCOME)
         print("The board location is represented by the number from 1 - 9:")
-        print_board(self.NUMBER)
+        self.print_board(self.NUMBER)
 
-    def chose_mode(self):
+    def chose_mode(self, mode):
         """
         choose game mode, single or 2-player
         """
-        is_mode_valid = False
-        while not is_mode_valid:
-            input_mode = input("1. Single Player: Player VS Bot \n"
-                               "2. Two Players: Player 1 VS 2 \n"
-                               "Please choose the game mode: ")
-            if input_mode.isdecimal() and 1 <= int(input_mode) <= 2:
-                is_mode_valid = True
-                if int(input_mode) == 2:
-                    self.is_single_player = False
-                    print("Now you are at Two Players Mode. Enjoy the game!")
-                else:
-                    print("Now you are at Single Players Mode. You'll playing against teh computer. Good luck!")
-            else:
-                print("Your input is invalid, please only input 1 or 2.")
+        if int(mode) == 1:
+            self.is_single_player = True
+            print("Now you are at Single Players Mode. You'll playing against teh computer. Good luck!")
+        else:
+            self.is_single_player = False
+            self.player_1 = 'X'
+            self.player_2 = 'O'
+            print("Now you are at Two Players Mode. Enjoy the game!")
 
-        if self.is_single_player:
-            player_first = input("Do you want to go first (Y / n): ")
-            if player_first == 'n':
-                self.is_single_player_first = False
-                self.single_player_mark = 'O'
-                print("The bot will go first using X. Then the player's turn with O.")
-            else:
-                print("You will go first using X. Then the bot goes with O.")
+    def player_priority(self, player_first):
+        if player_first == 'n':
+            self.is_single_player_first = False
+            self.bot = 'X'
+            self.player_1 = 'O'
+            print("The bot will go first using X. Then the player's turn with O.")
+        else:
+            self.is_single_player_first = True
+            self.player_1 = 'X'
+            self.bot = 'O'
+            print("You will go first using X. Then the bot goes with O.")
 
     def bot_step(self):
         available = []
@@ -113,20 +109,32 @@ class TicTacToc:
 if __name__ == '__main__':
     game = TicTacToc()
     game.start_game()
-    game.chose_mode()
+    is_mode_valid = False
+    while not is_mode_valid:
+        input_mode = input("1. Single Player: Player VS Bot \n"
+                           "2. Two Players: Player 1 VS 2 \n"
+                           "Please choose the game mode: ")
+        if input_mode.isdecimal() and 1 <= int(input_mode) <= 2:
+            is_mode_valid = True
+            game.chose_mode(input_mode)
+            if game.is_single_player:
+                player_choice = input("Do you want to go first (Y / n): ")
+                game.player_priority(player_choice)
+        else:
+            print("Your input is invalid, please only input 1 or 2.")
 
     current_player = 'X'
 
-    while game.winner is None and game.round_count < 9:
+    while game.winner is None and game.count < 9:
         print("The current board is:")
-        print_board(game.board)
-        game.round_count += 1
-        if game.round_count % 2 == 1:
-            print(f"Round {(game.round_count + 1) // 2}: ")
+        game.print_board(game.board)
+        game.count += 1
+        if game.count % 2 == 1:
+            print(f"Round {(game.count + 1) // 2}: ")
 
         # single player mode
         if game.is_single_player:
-            if game.single_player_mark == current_player:
+            if game.player_1 == current_player:
                 is_valid = False
                 while not is_valid:
                     location = input(f'Player {current_player}:please input the location (the number): ')
@@ -134,13 +142,13 @@ if __name__ == '__main__':
             else:
                 game.bot_step()
 
-        # 2-player
+        # 2-player mode
         else:
             is_valid = False
             while not is_valid:
                 location = input(f'Player {current_player}:please input the location (the number): ')
                 is_valid = location_is_valid(current_player, game.board, location)
-                
+
         # Next player
         current_player = other_player(current_player)
         game.winner = get_winner(game.board)
@@ -150,9 +158,9 @@ if __name__ == '__main__':
     else:
         print(f'Winner is {game.winner}!')
         if game.is_single_player:
-            if game.winner == game.single_player_mark:
+            if game.winner == game.player_1:
                 print("Congratulation, you beat the bot!")
             else:
                 print("Unfortunately, you lose the game. Try harder next time.")
     print('Here is the result board:')
-    print_board(game.board)
+    game.print_board(game.board)
