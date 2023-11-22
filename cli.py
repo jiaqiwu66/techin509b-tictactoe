@@ -11,6 +11,24 @@ from logic import location_is_valid
 
 
 # Reminder to check all the tests
+def print_board(input_board):
+    """
+    print board
+    :param input_board: the input board need to be print
+    :return: None
+    """
+    for row in input_board:
+        print("-------------")
+        print("|", end='')
+        for element in row:
+            if element is None:
+                print(f'   |', end='')
+            else:
+                print(f' {element} |', end='')
+        print()
+    print("-------------")
+
+
 class TicTacToc:
     board = None
     winner = None
@@ -44,27 +62,10 @@ class TicTacToc:
         self.count = 0
         self.winner = None
 
-    def print_board(self, input_board):
-        """
-        print board
-        :param input_board: the input board need to be print
-        :return: None
-        """
-        for row in input_board:
-            print("-------------")
-            print("|", end='')
-            for element in row:
-                if element is None:
-                    print(f'   |', end='')
-                else:
-                    print(f' {element} |', end='')
-            print()
-        print("-------------")
-
     def start_game(self):
         print(self.WELCOME)
         print("The board location is represented by the number from 1 - 9:")
-        self.print_board(self.NUMBER)
+        print_board(self.NUMBER)
 
     def chose_mode(self, mode):
         """
@@ -127,7 +128,7 @@ if __name__ == '__main__':
 
     while game.winner is None and game.count < 9:
         print("The current board is:")
-        game.print_board(game.board)
+        print_board(game.board)
         game.count += 1
         if game.count % 2 == 1:
             print(f"Round {(game.count + 1) // 2}: ")
@@ -163,4 +164,4 @@ if __name__ == '__main__':
             else:
                 print("Unfortunately, you lose the game. Try harder next time.")
     print('Here is the result board:')
-    game.print_board(game.board)
+    print_board(game.board)
