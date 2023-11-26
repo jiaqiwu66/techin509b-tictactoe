@@ -24,7 +24,7 @@ def get_winner(board):
                 flag = False
                 break
         if flag:
-            return board[row][0]
+            return board[row][0], 'H'
 
     # vertical
     for column in range(0, n):
@@ -34,7 +34,7 @@ def get_winner(board):
                 flag = False
                 break
         if flag:
-            return board[0][column]
+            return board[0][column], 'V'
 
     # diagonal
     flag = True
@@ -43,7 +43,7 @@ def get_winner(board):
             flag = False
             break
     if flag:
-        return board[0][0]
+        return board[0][0], 'D'
 
     flag = True
     for i in range(0, n - 1):
@@ -51,9 +51,9 @@ def get_winner(board):
             flag = False
             break
     if flag:
-        return board[0][n - 1]
+        return board[0][n - 1], 'D'
 
-    return None
+    return None, None
 
 
 def other_player(player):
@@ -64,7 +64,7 @@ def other_player(player):
         return "X"
 
 
-def location_is_valid(current_player, board, location):
+def location_is_valid(board, location):
     """Justify if the location user input is valid"""
     if location.isdecimal() and 1 <= int(location) <= 9:
         location = int(location)
@@ -72,7 +72,6 @@ def location_is_valid(current_player, board, location):
             print(f'Location {location} has already been processed, please use a valid one.')
             return False
         else:
-            board[(location - 1) // 3][(location - 1) % 3] = current_player
             return True
     else:
         print('The input is not valid, Please try again.')

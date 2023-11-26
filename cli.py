@@ -3,6 +3,7 @@
 # For core game logic, see logic.py.
 
 import random
+import csv
 
 from logic import make_empty_board
 from logic import other_player
@@ -30,18 +31,6 @@ def print_board(input_board):
 
 
 class TicTacToc:
-    board = None
-    winner = None
-    count = 0
-    # define mode for single player
-    is_single_player = None
-    # X always be the first
-    # O always be the second
-    is_single_player_first = None
-    player_1 = None
-    player_2 = None
-    bot = None
-
     NUMBER = [
         [1, 2, 3],
         [4, 5, 6],
@@ -56,11 +45,24 @@ class TicTacToc:
         | |  | | (__     | | (_| | (__     | | (_) |  __/
         |_|  |_|\\___|    |_|\\__,_|\\___|    |_|\\___/ \\___|  
     """
+    PATH = "./logs/log.csv"
+    PATH_TWO_PLAYER = "./logs/log_two_player.csv"
+    PATH_ONE_PLAYER = "./logs/log_one_player.csv"
 
     def __init__(self):
         self.board = make_empty_board()
-        self.count = 0
+        self.step = 0
         self.winner = None
+        # define mode for single player
+        self.is_single_player = None
+        # X always be the first
+        # O always be the second
+        self.is_single_player_first = None
+        self.player_1 = None
+        self.player_2 = None
+        self.bot = None
+        self.record = [None] * 12
+        self.winning_patterns = None
 
     def start_game(self):
         print(self.WELCOME)
@@ -103,8 +105,34 @@ class TicTacToc:
 
         if self.is_single_player_first:
             self.board[(loc - 1) // 3][(loc - 1) % 3] = 'O'
+            self.save_step_record(loc)
         else:
             self.board[(loc - 1) // 3][(loc - 1) % 3] = 'X'
+            self.save_step_record(loc)
+
+    def save_step_record(self, val):
+        self.record[self.step - 1] = val
+
+    def save_winner(self):
+        self.record[9] = self.winner
+
+    def save_winning_patterns(self):
+        self.record[10] = self.winning_patterns
+
+    def save_step(self):
+        self.record[11] = self.step
+
+    def write_record(self):
+        if self.is_single_player:
+            path = self.PATH_ONE_PLAYER
+        else:
+            path = self.PATH_TWO_PLAYER
+        with open(path, 'a+') as file:
+            csv_writer = csv.writer(file)
+            csv_writer.writerow(self.record)
+        with open(self.PATH, 'a+') as file:
+            csv_writer = csv.writer(file)
+            csv_writer.writerow(self.record)
 
 
 if __name__ == '__main__':
@@ -126,12 +154,12 @@ if __name__ == '__main__':
 
     current_player = 'X'
 
-    while game.winner is None and game.count < 9:
+    while game.winner is None and game.step < 9:
         print("The current board is:")
         print_board(game.board)
-        game.count += 1
-        if game.count % 2 == 1:
-            print(f"Round {(game.count + 1) // 2}: ")
+        game.step += 1
+        if game.step % 2 == 1:
+            print(f"Round {(game.step + 1) // 2}: ")
 
         # single player mode
         if game.is_single_player:
@@ -139,7 +167,11 @@ if __name__ == '__main__':
                 is_valid = False
                 while not is_valid:
                     location = input(f'Player {current_player}:please input the location (the number): ')
-                    is_valid = location_is_valid(current_player, game.board, location)
+                    is_valid = location_is_valid(game.board, location)
+                    if is_valid:
+                        location = int(location)
+                        game.board[(location - 1) // 3][(location - 1) % 3] = current_player
+                        game.save_step_record(location)
             else:
                 game.bot_step()
 
@@ -148,11 +180,18 @@ if __name__ == '__main__':
             is_valid = False
             while not is_valid:
                 location = input(f'Player {current_player}:please input the location (the number): ')
-                is_valid = location_is_valid(current_player, game.board, location)
+                is_valid = location_is_valid(game.board, location)
+                if is_valid:
+                    location = int(location)
+                    game.board[(location - 1) // 3][(location - 1) % 3] = current_player
+                    game.save_step_record(location)
 
         # Next player
         current_player = other_player(current_player)
-        game.winner = get_winner(game.board)
+        game.winner, game.winning_patterns = get_winner(game.board)
+    game.save_winner()
+    game.save_winning_patterns()
+    game.save_step()
 
     if game.winner is None:
         print('The board is full and there is no winner. Draw Game')
@@ -165,3 +204,5 @@ if __name__ == '__main__':
                 print("Unfortunately, you lose the game. Try harder next time.")
     print('Here is the result board:')
     print_board(game.board)
+    game.write_record()
+    # game.get_data()
