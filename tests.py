@@ -19,7 +19,7 @@ class TestLogic(unittest.TestCase):
             [
                 ['X', 'X', 'X'],
 
-                ['O', 'X', 'O'],
+                ['O', None, 'O'],
 
                 ['O', 'O', 'X'],
             ],
@@ -35,7 +35,7 @@ class TestLogic(unittest.TestCase):
 
                 ['O', 'X', 'O'],
 
-                ['O', 'O', 'O'],
+                ['O', None, 'O'],
             ],
             [
                 ['X', 'O', 'X'],
@@ -90,7 +90,19 @@ class TestLogic(unittest.TestCase):
                 ['X', 'X', 'O']
             ]
         ]
-        expect_winners = ['X', 'X', 'O', 'O', None, 'X', 'O', 'O', None, 'X', 'O']
+        expect_winners = [
+            ('X', 'D'),
+            ('X', 'H'),
+            ('O', 'H'),
+            ('O', 'V'),
+            (None, None),
+            ('X', 'V'),
+            ('O', 'V'),
+            ('O', 'V'),
+            (None, None),
+            ('X', 'D'),
+            ('O', 'V')
+             ]
         for i in range(0, len(board_list)):
             self.assertEqual(logic.get_winner(board_list[i]), expect_winners[i])
 
@@ -103,7 +115,7 @@ class TestLogic(unittest.TestCase):
             ['O', 'X', 'O'],
             [None, None, 'O'],
         ]
-        self.assertEqual(logic.get_winner(board), 'X')
+        self.assertEqual(logic.get_winner(board), ('X', 'H'))
 
     def test_check_winner_vertical(self):
         """
@@ -114,7 +126,7 @@ class TestLogic(unittest.TestCase):
             ['X', 'O', 'O'],
             ['X', None, None],
         ]
-        self.assertEqual(logic.get_winner(board), 'X')
+        self.assertEqual(logic.get_winner(board), ('X', 'V'))
 
     def test_check_winner_diagonal(self):
         """
@@ -125,7 +137,7 @@ class TestLogic(unittest.TestCase):
             [None, 'X', 'O'],
             ['O', None, 'X'],
         ]
-        self.assertEqual(logic.get_winner(board), 'X')
+        self.assertEqual(logic.get_winner(board), ('X', 'D'))
 
     def test_check_winner_draw(self):
         """
@@ -136,7 +148,7 @@ class TestLogic(unittest.TestCase):
             ['X', 'O', 'O'],
             ['O', 'X', 'X'],
         ]
-        self.assertEqual(logic.get_winner(board), None)
+        self.assertEqual(logic.get_winner(board), (None, None))
 
     def test_make_empty_board(self):
         """
@@ -169,16 +181,16 @@ class TestLogic(unittest.TestCase):
         ]
         # Test if the input is a valid integer number between 1-9 whose location in the board is None.
         # W is not a number, it's invalid.
-        self.assertEqual(logic.location_is_valid('X', board_test, 'W'), False)
+        self.assertEqual(logic.location_is_valid(board_test, 'W'), False)
         # 2.5 id not an integer number, it's invalid.
-        self.assertEqual(logic.location_is_valid('X', board_test, '2.5'), False)
+        self.assertEqual(logic.location_is_valid(board_test, '2.5'), False)
         # 2 is a valid integer number.
-        self.assertEqual(logic.location_is_valid('X', board_test, '2'), True)
+        self.assertEqual(logic.location_is_valid(board_test, '2'), True)
         # 1's location is not None, it's invalid.
-        self.assertEqual(logic.location_is_valid('X', board_test, '1'), False)
+        self.assertEqual(logic.location_is_valid(board_test, '1'), False)
         # 0 and 10 is not between 1-9, they are invalid.
-        self.assertEqual(logic.location_is_valid('X', board_test, '0'), False)
-        self.assertEqual(logic.location_is_valid('X', board_test, '10'), False)
+        self.assertEqual(logic.location_is_valid(board_test, '0'), False)
+        self.assertEqual(logic.location_is_valid(board_test, '10'), False)
 
     def test_chose_mode(self):
         """

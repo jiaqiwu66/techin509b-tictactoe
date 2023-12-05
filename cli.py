@@ -114,10 +114,16 @@ class TicTacToc:
         self.record[self.step - 1] = val
 
     def save_winner(self):
-        self.record[9] = self.winner
+        if self.winner is None:
+            self.record[9] = 0
+        else:
+            self.record[9] = self.winner
 
     def save_winning_patterns(self):
-        self.record[10] = self.winning_patterns
+        if self.winnning_patterns is None:
+            self.record[10] = 0
+        else:
+            self.record[10] = self.winning_patterns
 
     def save_step(self):
         self.record[11] = self.step
